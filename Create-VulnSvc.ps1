@@ -4,7 +4,7 @@
 Install-Module -Name PSPrivilege -Force
 
 # Get the user object for the account
-$account = New-Object -TypeName System.Security.Principal.NTAccount -ArgumentList 'research\dan'
+$account = New-Object -TypeName System.Security.Principal.NTAccount -ArgumentList 'shop\dan'
 
 # Add the SeShutdownPrivilege
 Add-WindowsRight -Name "SeShutdownPrivilege" -Account $account.Translate([System.Security.Principal.SecurityIdentifier])
@@ -18,32 +18,20 @@ Get-WindowsRight -Name "SeRemoteShutdownPrivilege"
 
 # --- Give them a Vulnerable Service to abuse ---
 
-# 1) Create folder for service binary
-#$svcFolder = "C:\VulnService"
-#New-Item -Path $svcFolder -ItemType Directory -Force | Out-Null
+#Create the service
+sc.exe create "VulnSvc" binPath= "C:\VulnService\PsExec.exe" DisplayName= "Test Service" start= auto
 
-# 2) Copy a harmless executable to act as the service binary (placeholder)
-# Using notepad.exe as placeholder; choose any benign exe present on the system
-#Copy-Item "C:\Windows\System32\notepad.exe" -Destination "$svcFolder\VulnService.exe" -Force
-
-# 3) Create the service (note sc.exe syntax requires the spaces after '=')
-#sc.exe create VulnSvc binPath= "$svcFolder\VulnService.exe" DisplayName= "Vulnerable Test Service" start= auto
-sc.exe create VulnSvc binPath= "$svcFolder\PsExec.exe" DisplayName= "Test Service" start= auto
-
-# 4) Grant Non-admin users Modify rights on the folder so low-priv users can overwrite the exe
-# This grants the built-in Users group Modify permissions (lab-only!)
-#icacls $svcFolder /grant "Users:(M)" /T
-#icacls $svcFolder /grant "research\dan:(OI)(CI)M" /T
+#Give Dan rights to abuse the service via icacls
+#icacls "C:\VulnService" /grant "shop\dan:(OI)(CI)F" /T
 
 #Give Dan the right to change his rights and overwrite the service *.exe with their own *.exe
 Set-Location C:
 $ACL = Get-Acl -Path "C:\VulnService"
-$AccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("research\dan”,”FullControl”,”Allow”)
-$AccessRule2 = New-Object System.Security.AccessControl.FileSystemAccessRule("research\dan”,”Modify”,”Deny”)
+$AccessRule = New-Object System.Security.AccessControl.FileSystemAccessRule("shop\dan”,”FullControl”,”Allow”)
+$AccessRule2 = New-Object System.Security.AccessControl.FileSystemAccessRule("shop\dan”,”Write”,”Deny”)
 $ACL.SetAccessRule($AccessRule)
 $ACL.SetAccessRule($AccessRule2)
 $ACL | Set-Acl -Path "C:\VulnService"
 
-# 5) Start the service
-Start-Service -Name VulnSvc
-Write-Host "Vulnerable service created and started. Service binary at $svcFolder\VulnService.exe"
+#Start the service
+#Start-Service -Name VulnSvc

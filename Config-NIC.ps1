@@ -42,5 +42,6 @@ Write-Host "Configuring $VMName to use IP $IP, Gateway $Gateway, and Prefix $DC_
 #Set IPv4 address, gateway, & DNS servers
 Invoke-Command -VMName "$VMName" {$NIC = (Get-NetAdapter).InterfaceAlias ; Disable-NetAdapterBinding -InterfaceAlias $NIC -ComponentID ms_tcpip6} -Credential $InitialCredObject
 Invoke-Command -VMName "$VMName" {$NIC = (Get-NetAdapter).InterfaceAlias ; New-NetIPAddress -InterfaceAlias $NIC -AddressFamily IPv4 -IPAddress $using:IP -PrefixLength $using:DC_Prefix -DefaultGateway $using:Gateway} -Credential $InitialCredObject
-Invoke-Command -VMName "$VMName" {$NIC = (Get-NetAdapter).InterfaceAlias ; Set-DNSClientServerAddress -InterfaceAlias $NIC -ServerAddresses ("$using:NetworkPortion.145", "$using:NetworkPortion.140", "$using:NetworkPortion.141", "1.1.1.1", "8.8.8.8")} -Credential $InitialCredObject
+Start-Sleep -Seconds 30
+Invoke-Command -VMName "$VMName" {$NIC = (Get-NetAdapter).InterfaceAlias ; Set-DNSClientServerAddress -InterfaceAlias $NIC -ServerAddresses ("$using:NetworkPortion.150", "$using:NetworkPortion.145", "$using:NetworkPortion.140", "$using:NetworkPortion.141", "1.1.1.1", "8.8.8.8")} -Credential $InitialCredObject
 } #Close Config-NIC function

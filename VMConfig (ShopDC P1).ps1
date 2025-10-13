@@ -20,12 +20,13 @@ $IP = "$NetworkPortion.150"
 If($FirstOctet -eq "169")
 {
 $NetworkPortion = "192.168.0"
-$IP = "192.168.0.145"
+$IP = "192.168.0.150"
 $DC_Prefix = "24"
 }
 
 #Set IPv4 address, gateway, & DNS servers
 New-NetIPAddress -InterfaceAlias $NIC -AddressFamily IPv4 -IPAddress $IP -PrefixLength $DC_Prefix -DefaultGateway $Gateway
+Start-Sleep -Seconds 30
 Set-DNSClientServerAddress -InterfaceAlias $NIC -ServerAddresses ("$NetworkPortion.150", "$NetworkPortion.145", "$NetworkPortion.140", "$NetworkPortion.141", "1.1.1.1", "8.8.8.8")
 
 netsh advfirewall firewall set rule group="Network Discovery" new enable=Yes

@@ -9,8 +9,8 @@
     )
 
 #Creates the VM from a provided ISO & answer file, names it provided VMName
-Set-Location "C:\VM_Stuff_Share\Lab_Version1.1"
-$isoFilePath = "..\ISOs\Windows Server 2022 (20348.169.210806-2348.fe_release_svc_refresh_SERVER_EVAL_x64FRE_en-us).iso"
+Set-Location "C:\VM_Stuff_Share\Lab_Version1.1\ShopDomain"
+$isoFilePath = "..\..\ISOs\Windows Server 2022 (20348.169.210806-2348.fe_release_svc_refresh_SERVER_EVAL_x64FRE_en-us).iso"
 $answerFilePath = ".\2022_autounattend.xml"
 
 New-Item -ItemType Directory -Path C:\Hyper-V_VMs\$VMName
