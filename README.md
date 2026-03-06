@@ -15,7 +15,7 @@ I parameterized and abstracted out a LOT more of the setup & config.
 
 Future improvements:
 
-Write a Generate-Random.ps1 that'll change all the creds to <random word><random word><##><special character> at the end, that way it's truly a black box.
+Write a Generate-Random.ps1 that'll change all the creds to 'random word random word ## special character' at the end, that way it's truly a black box.
 
 Cleanup the PS1s that spinup & config the first two forests. 
 
